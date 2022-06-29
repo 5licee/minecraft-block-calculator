@@ -221,6 +221,10 @@ class Application:
             self.canvas.bind("<MouseWheel>", lambda event: self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units"))
 
     def event_handler(self, event: str, *args):
+        """
+        Handles events.
+        """
+
         if event == "input":
             # get value        
             value = self.input.get()
@@ -278,6 +282,9 @@ class Application:
             self.root.destroy()
 
     def run(self):
+        """
+        Runs the Application.
+        """
         self._main()
         self._update()
         self.root.mainloop()
