@@ -2,7 +2,7 @@ import json
 import os
 import tkinter
 from tkinter import ttk
-from typing import List
+from typing import List, Literal
 
 
 def get_blocks() -> List[str]:
@@ -84,13 +84,13 @@ class Application:
             background.place(x=650, y=0)
 
             # menu
-            menu_holder = tkinter.Frame(main, width=250, height=100)
+            menu_holder = tkinter.Frame(main, width=250, height=150)
             menu_holder.configure(background="#222222")
             menu_holder.place(x=650, y=0)
             menu_holder.pack_propagate(0)
 
             # buttons
-            for name in ["[clear-all]", "[quit]"]:
+            for name in ["[clear-all]", '[copy-to-clipboard]',"[quit]"]:
                 # holder 
                 button_holder = tkinter.Frame(menu_holder, width=250, height=50)
                 button_holder.configure(background="#222222")
@@ -105,6 +105,7 @@ class Application:
                 # binds
                 if name == "[clear-all]": button.bind("<Button-1>", lambda event: self.event_handler("clear-all"))
                 elif name == "[quit]": button.bind("<Button-1>", lambda event: self.event_handler("quit"))
+                elif name == "[copy-to-clipboard]": button.bind("<Button-1>", lambda event: self.event_handler("copy-to-clipboard"))
                 button.bind("<Enter>", lambda event: event.widget.configure(foreground="#ff0000"))
                 button.bind("<Leave>", lambda event: event.widget.configure(foreground="#ffffff"))
 
@@ -277,6 +278,17 @@ class Application:
 
             # update canvas
             self._update()
+
+        elif event == "copy-to-clipboard":
+            # get data
+            with open("data.json", "r") as f:
+                self.data = json.load(f)
+            
+            # copy to clipboard
+            self.root.clipboard_clear()
+
+            # set text
+            self.root.clipboard_append("\n".join([f"{x['block'].replace('_', ' ').title()}: {formatted_quantity(int(x['quantity']))}" for x in self.data]))
 
         elif event == "quit":
             self.root.destroy()
