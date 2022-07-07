@@ -233,7 +233,7 @@ class Application:
                 return
             try:
                 # check for format
-                quantity, *block = value.split(" ")
+                quantity, *block = value.lower().split(" ")
                 quantity = int(quantity)
                 block = "_".join(block)
 
