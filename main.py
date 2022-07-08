@@ -2,7 +2,10 @@ import json
 import os
 import tkinter
 from tkinter import ttk
-from typing import List, Literal
+from typing import List
+
+import PIL.Image as Image
+import PIL.ImageTk as ImageTk
 
 
 def get_blocks() -> List[str]:
@@ -170,7 +173,10 @@ class Application:
             icon.pack(side="left", padx=25, pady=12)
 
             if block in self.blocks:
-                image = tkinter.PhotoImage(file='assets/blocks/' + block + '.png').zoom(2)
+                image = Image.open(f"assets/blocks/{block}.png")
+                image = image.crop((0, 0, 25, 25))
+                image = image.resize((40, 40))
+                image = ImageTk.PhotoImage(image)
             else:
                 image = tkinter.PhotoImage(file='assets/blocks/unknown.png')
             
@@ -229,15 +235,21 @@ class Application:
         if event == "input":
             # get value        
             value = self.input.get()
+            
             # check for blank
             if value == "":
                 return
+            
             try:
                 # check for format
-                quantity, *block = value.lower().split(" ")
+                quantity, *block = value.lower().strip().split(" ")
                 quantity = int(quantity)
                 block = "_".join(block)
 
+                # check negative
+                if quantity < 0:
+                    return
+                
                 # get data
                 with open("data.json", "r") as f:
                     self.data = json.load(f)
